@@ -2,14 +2,16 @@
 layout: post
 title: Binary serialization - how not to lose backward compatibility
 ---
-###How to get more control over the serialization process and what for.###
+
+### How to get more control over the serialization process and what for ###
 
 This small example shows how you can lose backward compatibility in your programs, if you do not take care in advance about this.
-And ways to get more control of serialization process.
+And ways to get more control of serialization process
 
 At first, we will write an example of the first version of the program:
 
 Version 1
+
 ```csharp
 [Serializable]
 class Data
@@ -30,6 +32,7 @@ And now, let us assume that in the second version of the program added a new cla
 Now code will look like this:
 
 Version 2
+
 ```csharp
 [Serializable]
 class NewItem
@@ -123,13 +126,13 @@ And since this type is not in the assembly and dependencies can't be fixed. For 
 It is some 'gotchas' in the process of serialization.
 For some reason, it does not work correctly only for arrays of new reference types.
 
-### Get more control over the serialization ###
 
 _And the first way to fix it and maintain compatibility?_
 
 _Use a collection of new structures rather than classes or use a dictionary(possible classes), because a dictionary it's a collection of keyvaluepair(it's structure)_
 
 
+### Get more control over the serialization ###
 
 And now ways to get more control over the serialization process:
 
@@ -313,3 +316,5 @@ class Data : ISerializable
 Of course, it's not very nice solution, but so we can solve the problem.
 
 And best of all, of course not to use a binary serialization for this task
+
+
