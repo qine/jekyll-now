@@ -110,17 +110,17 @@ StackTrace:
 **Why?**
 
 The ObjectManager has a different logic to resolve dependencies for arrays and for reference and value types.
-
 We added an array of new the reference type which is absent in our assembly.
 
-When ObjectManager attempts to resolve dependencies it builds the graph.
 
+When ObjectManager attempts to resolve dependencies it builds the graph.
 When it sees the array, it can not fix it immediately, so that it creates a dummy reference and then fixes the array later.
+
 
 And since this type is not in the assembly and dependencies can't be fixed. For some reason, it does not remove the array from the list of elements for the fixes and at the end it throws an exception "IncorrectNumberOfFixups".
 
-It is some 'gotchas' in the process of serialization.
 
+It is some 'gotchas' in the process of serialization.
 For some reason, it does not work correctly only for arrays of new reference types.
 
 
@@ -152,7 +152,7 @@ Now we can check what types are loading and on this basis to decide what we real
 
 For using a binder, you must add it to the BinaryFormatter
 
-```
+```csharp
 object DeserializeData(byte[] bytes)
 {
     var binaryFormatter = new BinaryFormatter();
@@ -168,7 +168,7 @@ object DeserializeData(byte[] bytes)
 Serialization surrogate selector that allows one object to perform serialization and deserialization of another object  and can transform the serialized data if necessary.
 As well allows to properly serialize or deserialize a class that is not itself \[Serializable\].
 
-```
+```csharp
 public class ItemSurrogate : ISerializationSurrogate
 {
     public void GetObjectData(object obj, SerializationInfo info, StreamingContext context)
@@ -188,7 +188,7 @@ public class ItemSurrogate : ISerializationSurrogate
 
 Then you need to let your IFormatter know about the surrogates by defining and initializing a SurrogateSelector and assigning it to your BinaryFormatter
 
-```
+```csharp
 var surrogateSelector = new SurrogateSelector();
 surrogateSelector.AddSurrogate(typeof(Item), new StreamingContext(StreamingContextStates.All), new ItemSurrogate());   
 var binaryFormatter = new BinaryFormatter{
@@ -216,7 +216,7 @@ public class Item
 
 Allows an object to control its own serialization and deserialization
 
-```
+```csharp
 [Serializable]
 public class Item : ISerializable
 {
@@ -250,9 +250,11 @@ _Now, we can control how the data will be serialized._
 
 _And the second solution to the problem, which I described in the beginning, how to maintain backward compatibility, if we do not taken care of this before_
 
+
 _Just specify that an array of new classes should not serialize as an array, but merely as a sequence of elements, without declaring an array._
 
-```
+
+```csharp
 [Serializable]
 class NewItem
 {
