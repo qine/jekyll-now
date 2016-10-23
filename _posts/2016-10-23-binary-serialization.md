@@ -126,6 +126,10 @@ And since this type is not in the assembly and dependencies can't be fixed. For 
 It is some 'gotchas' in the process of serialization.
 For some reason, it does not work correctly only for arrays of new reference types.
 
+```
+A Note:
+Similar code will work correctly, if you do not use arrays with new classes
+```
 
 _And the first way to fix it and maintain compatibility?_
 
