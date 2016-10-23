@@ -9,24 +9,20 @@ And ways to get more control of serialization process.
 
 At first, we will write an example of the first version of the program:
 
-Version 1\.
-
-{% highlight c# monokai %}
-
+Version 1
+```csharp
 [Serializable]
 class Data
 {
     [OptionalField]
     private int _version;
-
     public int Version
     {
         get { return _version; }
         set { _version = value; }
     }
 }
-
-{% endhighlight %}
+```
 
 And now, let us assume that in the second version of the program added a new class. And we need to store it in an array.
 
