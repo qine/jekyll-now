@@ -16,6 +16,7 @@ class Data
 {
     [OptionalField]
     private int _version;
+    
     public int Version
     {
         get { return _version; }
@@ -28,10 +29,8 @@ And now, let us assume that in the second version of the program added a new cla
 
 Now code will look like this:
 
-Version \2\.
-
-{% highlight c# monokai %}
-
+Version 2
+```csharp
 [Serializable]
 class NewItem
 {
@@ -66,13 +65,11 @@ class Data
         set { _newItems = value; }
     }
 }
-
-{% endhighlight %}
+```
 
 And code for serialize and deserialize
 
-{% highlight c# monokai %}
-
+```csharp
 private static byte[] SerializeData(object obj)
 {
     var binaryFormatter = new BinaryFormatter();
@@ -89,16 +86,13 @@ private static object DeserializeData(byte[] bytes)
     using (var memoryStream = new MemoryStream(bytes))
         return binaryFormatter.Deserialize(memoryStream);
 }
+```
 
-{% endhighlight %}
-
-
-And so, what would happen when you serialize the data in the program of v2 and will try to deserialize them in the program of v1?
+_And so, what would happen when you serialize the data in the program of v2 and will try to deserialize them in the program of v1?_
 
 You get an exception:
 
-{% highlight c# monokai %}
-
+```csharp
 System.Runtime.Serialization.SerializationException was unhandled
 Message=The ObjectManager found an invalid number of fixups. This usually indicates a problem in the Formatter.Source=mscorlib
 StackTrace:
@@ -111,8 +105,7 @@ StackTrace:
    at Microsoft.VisualStudio.HostingProcess.HostProc.RunUsersAssembly()
    at System.Threading.ExecutionContext.Run(ExecutionContext executionContext, ContextCallback callback, Object state)
    at System.Threading.ThreadHelper.ThreadStart()
-
-{% endhighlight %}
+```
 
 **Why?**
 
@@ -143,8 +136,7 @@ And now ways to get more control over the serialization process:
 The gives you an opportunity to inspect what types are being loaded in your application domain.
 SerializationBinder can also be used for security.There might be some security exploits when you are trying to deserialize some data from an untrusted source:
 
-{% highlight c# monokai %}
-
+```csharp
 class MyBinder : SerializationBinder
 {
     public override Type BindToType(string assemblyName, string typeName)
@@ -154,15 +146,13 @@ class MyBinder : SerializationBinder
         return null;
     }
 }
-
-{% endhighlight %}
+```
 
 Now we can check what types are loading and on this basis to decide what we really want to receive
 
 For using a binder, you must add it to the BinaryFormatter
 
-{% highlight c# monokai %}
-
+```
 object DeserializeData(byte[] bytes)
 {
     var binaryFormatter = new BinaryFormatter();
@@ -171,16 +161,14 @@ object DeserializeData(byte[] bytes)
     using (var memoryStream = new MemoryStream(bytes))
         return binaryFormatter.Deserialize(memoryStream);
 }
-
-{% endhighlight %}
+```
 
 **SerializationSurrogates**
 
 Serialization surrogate selector that allows one object to perform serialization and deserialization of another object  and can transform the serialized data if necessary.
 As well allows to properly serialize or deserialize a class that is not itself \[Serializable\].
 
-{% highlight c# monokai %}
-
+```
 public class ItemSurrogate : ISerializationSurrogate
 {
     public void GetObjectData(object obj, SerializationInfo info, StreamingContext context)
@@ -196,25 +184,21 @@ public class ItemSurrogate : ISerializationSurrogate
         return item;
     }
 }
-
-{% endhighlight %}
+```
 
 Then you need to let your IFormatter know about the surrogates by defining and initializing a SurrogateSelector and assigning it to your BinaryFormatter
 
-{% highlight c# monokai %}
-
+```
 var surrogateSelector = new SurrogateSelector();
 surrogateSelector.AddSurrogate(typeof(Item), new StreamingContext(StreamingContextStates.All), new ItemSurrogate());   
 var binaryFormatter = new BinaryFormatter{
     SurrogateSelector = surrogateSelector
 };
-
-{% endhighlight %}
+```
 
 Even if the class is not marked Serializable.
 
-{% highlight c# monokai %}
-
+```csharp
 //this class is not serializable
 public class Item
 {
@@ -226,15 +210,13 @@ public class Item
         set { _name = value; }
     }
 }
-
-{% endhighlight %}
+```
 
 **ISerialization**
 
 Allows an object to control its own serialization and deserialization
 
-{% highlight c# monokai %}
-
+```
 [Serializable]
 public class Item : ISerializable
 {
@@ -261,9 +243,7 @@ public class Item : ISerializable
         info.AddValue("_name", _name, typeof(string));
     }
 }
-
-{% endhighlight %}
-
+```
 
 _Now, we can control how the data will be serialized._
 
@@ -272,8 +252,7 @@ _And the second solution to the problem, which I described in the beginning, how
 
 _Just specify that an array of new classes should not serialize as an array, but merely as a sequence of elements, without declaring an array._
 
-{% highlight c# monokai %}
-
+```
 [Serializable]
 class NewItem
 {
@@ -324,12 +303,9 @@ class Data : ISerializable
             info.AddValue($"_newItem{i}", _newItems[i], typeof(NewItem));
     }
 }
-
-{% endhighlight %}
+```
 
                  
 Of course, it's not very nice solution, but so we can solve the problem.
 
 And best of all, of course not to use a binary serialization for this task
-
-![_config.yml]({{ site.baseurl }}/images/config.png)
