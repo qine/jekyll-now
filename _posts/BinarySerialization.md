@@ -9,7 +9,7 @@ And ways to get more control of serialization process.
 
 At first, we will write an example of the first version of the program:
 
-Version \1\.
+Version 1\.
 
 {% highlight c# monokai %}
 
@@ -335,3 +335,5 @@ class Data : ISerializable
 Of course, it's not very nice solution, but so we can solve the problem.
 
 And best of all, of course not to use a binary serialization for this task
+
+![_config.yml]({{ site.baseurl }}/images/config.png)
