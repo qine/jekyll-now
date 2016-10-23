@@ -133,7 +133,7 @@ _Use a collection of new structures rather than classes or use a dictionary(poss
 
 And now ways to get more control over the serialization process:
 
-**SerializationBinder**
+**1. SerializationBinder**
 
 The gives you an opportunity to inspect what types are being loaded in your application domain.
 SerializationBinder can also be used for security.There might be some security exploits when you are trying to deserialize some data from an untrusted source:
@@ -165,7 +165,7 @@ object DeserializeData(byte[] bytes)
 }
 ```
 
-**SerializationSurrogates**
+**2. SerializationSurrogates**
 
 Serialization surrogate selector that allows one object to perform serialization and deserialization of another object  and can transform the serialized data if necessary.
 As well allows to properly serialize or deserialize a class that is not itself \[Serializable\].
@@ -214,7 +214,7 @@ public class Item
 }
 ```
 
-**ISerialization**
+**3. ISerialization**
 
 Allows an object to control its own serialization and deserialization
 
